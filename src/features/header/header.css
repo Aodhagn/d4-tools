@@ -1,0 +1,10 @@
+div.toolbar {
+  padding: 0 8px;
+  background-color: #202020;
+  background-image: url('https://aodiablo.s3.us-west-2.amazonaws.com/background.jpg');
+}
+
+.notification-icon {
+  margin-right: 5px !important;
+  padding: 10px !important;
+}

@@ -1,38 +1,22 @@
-.App {
-  text-align: center;
+#main-container {
+  max-width: 875px;
+  padding: 0;
+  background-image: url('https://aodiablo.s3.us-west-2.amazonaws.com/background.jpg');
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.sub-container {
+  margin: 0 -20px;
+  padding: 24px;
+  width: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.bordered-container-bottom {
+  border-bottom: 20px solid transparent;
+  border-image: url('https://aodiablo.s3.us-west-2.amazonaws.com/border_fixed.jpg') 0 136 52 136 round;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.bordered-container-vertical {
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-image: url('https://aodiablo.s3.us-west-2.amazonaws.com/border_fixed.jpg') 486 52 842 52 round;
 }
