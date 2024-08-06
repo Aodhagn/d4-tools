@@ -9,7 +9,7 @@ export const AdditiveDamageView = () => {
 
   const relevantAdditives = new Set<DamageType>();
 
-  for (const damageSource of damageSources) {
+  for (const damageSource of Object.values(damageSources)) {
     for (const additive in damageSource.source.additiveDamagePredicates) {
       relevantAdditives.add(additive as DamageType);
     }

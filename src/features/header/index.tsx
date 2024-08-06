@@ -11,12 +11,12 @@ export const Header = () => (
       <Toolbar className='toolbar'>
         <Typography variant='h3' sx={{flexGrow: 1, display: {xs: 'none', sm: 'flex'}}}>Diablo 4 Calculator</Typography>
         <Typography variant='h5' sx={{flexGrow: 1, display: {xs: 'flex', sm: 'none'}}}>Diablo 4 Calculator</Typography>
-        <Button href='/notifications' variant='outlined' color='secondary' className='notification-icon'>
+        {/* <Button href='/notifications' variant='outlined' color='secondary' className='notification-icon'>
           <NotificationsIcon />
         </Button>
         <PersistGate persistor={persistor} onBeforeLift={() => console.log('Lifting gate')}>
           <LoginButton />
-        </PersistGate>
+        </PersistGate> */}
       </Toolbar>
     </AppBar>
 )

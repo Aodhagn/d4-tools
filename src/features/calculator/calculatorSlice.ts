@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { AdditiveDamage, Attributes, CalculatorData, CharacterClass, DamageMultipliers, DamageSource, EMPTY_ATTRIBUTES } from "../../data/interface";
+import { AdditiveDamage, Attributes, CalculatorData, CharacterClass, DamageMultipliers, DamageSource, DamageSourceInstance, EMPTY_ATTRIBUTES, EnemyState, PlayerState } from "../../data/interface";
 
 const initialState: CalculatorData = {
   name: '',
@@ -11,7 +11,7 @@ const initialState: CalculatorData = {
   minionAttackSpeed: 0,
   additiveDamage: {},
   damageMultipliers: {},
-  damageSources: [],
+  damageSources: {},
   playerState: {
     hasBarrier: false,
   },
@@ -36,18 +36,35 @@ export const calculatorSlice = createSlice({
       state.weaponDamage = action.payload;
     },
     addDamageSource: (state, action: PayloadAction<DamageSource>) => {
-      state.damageSources = [...state.damageSources, {
-        source: action.payload,
-        rank: 1,
-        isCrit: false,
-        isOP: false,
-      }]
+      state.damageSources = {
+        ...state.damageSources, 
+        [action.payload.name]: {
+          source: action.payload,
+          rank: 1,
+          canCrit: action.payload.canCrit,
+          isCrit: false,
+          canOP: action.payload.canOP,
+          isOP: false,
+        }
+      }
+    },
+    updateDamageSourceInstance: (state, action: PayloadAction<DamageSourceInstance>) => {
+      state.damageSources = {
+        ...state.damageSources,
+        [action.payload.source.name]: action.payload,
+      }
     },
     updateAdditiveDamage: (state, action: PayloadAction<AdditiveDamage>) => {
       state.additiveDamage = {...state.additiveDamage, ...action.payload};
     },
     updateMultiplier: (state, action: PayloadAction<DamageMultipliers>) => {
       state.damageMultipliers = {...state.damageMultipliers, ...action.payload}
+    },
+    updatePlayerState: (state, action: PayloadAction<PlayerState>) => {
+      state.playerState = {...state.playerState, ...action.payload};
+    },
+    updateEnemyState: (state, action: PayloadAction<EnemyState>) => {
+      state.enemyState = {...state.enemyState, ...action.payload};
     },
   }
 });
@@ -58,6 +75,9 @@ export const {
   updateAttributes, 
   updateWeaponDamage, 
   addDamageSource,
+  updateDamageSourceInstance,
   updateAdditiveDamage,
   updateMultiplier,
+  updatePlayerState,
+  updateEnemyState,
 } = calculatorSlice.actions;

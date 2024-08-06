@@ -23,7 +23,7 @@ export const DamageSources = () => {
   }
   console.log(classDamageSources)
   const availableDamageSources = [...data.commonDamageSources, ...classDamageSources].filter(val => (
-    damageSources.findIndex(source => source.source.name === val.name) === -1
+    !damageSources.hasOwnProperty(`${val}`)
   ));
 
   const handleSelection = (selection: string | null) => {
@@ -39,7 +39,7 @@ export const DamageSources = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}><Typography variant='h5'>Damage Sources</Typography></Grid>
-      {damageSources.map(source => 
+      {Object.values(damageSources).map(source => 
         <DamageSourceView {...source} key={source.source.name}/>  
       )}
       <Grid item xs={12}>

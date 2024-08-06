@@ -8,15 +8,19 @@ export interface CalculatorData {
   readonly minionAttackSpeed?: number;
   readonly additiveDamage: AdditiveDamage;
   readonly damageMultipliers: DamageMultipliers;
-  readonly damageSources: DamageSourceInstance[];
+  readonly damageSources: DamageSources;
   readonly playerState: PlayerState;
   readonly enemyState: EnemyState;
 }
 
+export type DamageSources = Record<string, DamageSourceInstance>;
+
 export interface DamageSourceInstance {
   readonly source: DamageSource;
   readonly rank: number;
+  readonly canCrit: boolean;
   readonly isCrit: boolean;
+  readonly canOP: boolean;
   readonly isOP: boolean;
 }
 
@@ -153,14 +157,6 @@ export enum DamageType {
 
 }
 
-export interface DamageMultiplier {
-  readonly name: DamageMultiplierName;
-  readonly variable: boolean;
-  readonly enabled: boolean;
-  readonly value: number;
-  readonly apply: (prev: number, thisMulti: DamageMultiplier) => number;
-}
-
 export enum DamageMultiplierName {
   // General
 
@@ -233,6 +229,394 @@ export enum DamageMultiplierName {
 
 }
 
+type DamageMultiplierType = 'Aspect' | 'Unique' | 'Paragon' | 'Glyph' | 'Skill';
+
+export interface DamageMultiplier {
+  readonly name: DamageMultiplierName;
+  readonly type: DamageMultiplierType;
+  readonly variable: boolean;
+  readonly enabled: boolean;
+  readonly value: number;
+  readonly apply: (prev: number, thisMulti: DamageMultiplier) => number;
+}
+
+export interface DamageMultiplierBaseData {
+  readonly type: DamageMultiplierType;
+  readonly defaultValue: number;
+  readonly variable: boolean;
+  readonly apply: (prev: number, thisMulti: DamageMultiplier) => number;
+}
+
+export type DamageMultiplierDataset = {
+  // TODO: make this non-optional once all values are defined
+  readonly [key in DamageMultiplierName]: DamageMultiplierBaseData;
+}
+
+export const DefaultMultiplierApply = (prev: number, thisMulti: DamageMultiplier) => (prev * thisMulti.value);
+
+export const DamageMultiplierData: DamageMultiplierDataset = {
+  // General
+
+  // Aspects
+  
+  [DamageMultiplierName.Conceited]: {
+    type: 'Aspect',
+    defaultValue: 1.25,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Edgemasters]: {
+    type: 'Aspect',
+    defaultValue: 1.2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Elements]: {
+    type: 'Aspect',
+    defaultValue: 1.3,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Expectant]: {
+    type: 'Aspect',
+    defaultValue: 1.3,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.InnerCalm]: {
+    type: 'Aspect',
+    defaultValue: 1.3,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Retribution]: {
+    type: 'Aspect',
+    defaultValue: 1.3,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Adaptability]: {
+    type: 'Aspect',
+    defaultValue: 1.8,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+
+  // Uniques
+
+  [DamageMultiplierName.StarlessSkies]: {
+    type: 'Unique',
+    defaultValue: 1.5,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Grandfather]: {
+    type: 'Unique',
+    defaultValue: 2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BanishedLordsTalisman]: {
+    type: 'Unique',
+    defaultValue: 1.6,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.FistsOfFate]: {
+    type: 'Unique',
+    defaultValue: 2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.GodslayerCrown]: {
+    type: 'Unique',
+    defaultValue: 1.6,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Paingorgers]: {
+    type: 'Unique',
+    defaultValue: 3,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.PenitentGreaves]: {
+    type: 'Unique',
+    defaultValue: 1.15,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.TibaultsWill]: {
+    type: 'Unique',
+    defaultValue: 1.2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+
+  // Necromancer
+
+  // Aspects
+
+  [DamageMultiplierName.Blighted]: {
+    type: 'Aspect',
+    defaultValue: 2.2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BloodSeekers]: {
+    type: 'Aspect',
+    defaultValue: 1.25,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Cadaverous]: {
+    type: 'Aspect',
+    defaultValue: 1.2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Damned]: {
+    type: 'Aspect',
+    defaultValue: 1.5,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Decay]: {
+    type: 'Aspect',
+    defaultValue: 1.45,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.GraspingVeins]: {
+    type: 'Aspect',
+    defaultValue: 1.5,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Reanimation]: {
+    type: 'Aspect',
+    defaultValue: 1.4,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Serration]: {
+    type: 'Aspect',
+    defaultValue: 1.4,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Splintering]: {
+    type: 'Aspect',
+    defaultValue: 1.6,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.UntimelyDeath]: {
+    type: 'Aspect',
+    defaultValue: 1.6,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.UnyieldingCommander]: {
+    type: 'Aspect',
+    defaultValue: 2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BloodGetters]: {
+    type: 'Aspect',
+    defaultValue: 1.21,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+
+  // Uniques
+
+
+  [DamageMultiplierName.BlackRiver]: {
+    type: 'Unique',
+    defaultValue: 2.3,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BloodMoonBreeches]: {
+    type: 'Unique',
+    defaultValue: 1.7,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BloodlessScream]: {
+    type: 'Unique',
+    defaultValue: 2.5,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.HowlFromBelow]: {
+    type: 'Unique',
+    defaultValue: 1.4,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.MutilatorPlate]: {
+    type: 'Unique',
+    defaultValue: 1.7,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+
+  // Paragon
+
+  [DamageMultiplierName.CultLeader]: {
+    type: 'Paragon',
+    defaultValue: 2.5,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.HulkingMonstrosity]: {
+    type: 'Paragon',
+    defaultValue: 2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.FleshEater]: {
+    type: 'Paragon',
+    defaultValue: 1.4,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BoneGraft]: {
+    type: 'Paragon',
+    defaultValue: 1.08,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BloodBegetsBlood]: {
+    type: 'Paragon',
+    defaultValue: 1.3,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.BloodBath]: {
+    type: 'Paragon',
+    defaultValue: 1.35,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Wither]: {
+    type: 'Paragon',
+    defaultValue: 1.5,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+
+  // Glyphs
+
+  [DamageMultiplierName.Abyssal]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Amplify]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Control]: {
+    type: 'Glyph',
+    defaultValue: 1.2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Corporeal]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Deadraiser]: {
+    type: 'Glyph',
+    defaultValue: 1.15,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Desecration]: {
+    type: 'Glyph',
+    defaultValue: 1.2,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Dominate]: {
+    type: 'Glyph',
+    defaultValue: 1.12,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Essence]: {
+    type: 'Glyph',
+    defaultValue: 1.22,
+    variable: false,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Exploit]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Golem]: {
+    type: 'Glyph',
+    defaultValue: 1.25,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Gravekeeper]: {
+    type: 'Glyph',
+    defaultValue: 1.18,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Abyssal]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Revenge]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Sacrificial]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+  [DamageMultiplierName.Scourge]: {
+    type: 'Glyph',
+    defaultValue: 1.1,
+    variable: true,
+    apply: DefaultMultiplierApply,
+  },
+}
+
+export const initializeMultiplier = (name: DamageMultiplierName): DamageMultiplier | undefined => {
+  const base = DamageMultiplierData[name];
+  if (base) {
+    return {
+      name,
+      type: base.type,
+      variable: base.variable,
+      enabled: true,
+      value: base.defaultValue,
+      apply: base.apply,
+    }
+  }
+}
+
 export type PredicateContext = CalculatorData & DamageSourceInstance;
 export type PredicateTest = (context: PredicateContext) => boolean;
 export const AlwaysTrue: PredicateTest = () => true;
@@ -247,6 +631,8 @@ export interface DamageSource {
   readonly name: string;
   readonly baseDamage: number;
   readonly hasRanks: boolean;
+  readonly canCrit: boolean;
+  readonly canOP: boolean;
   readonly additiveDamagePredicates: InteractionPredicates;
   readonly multiplierPredicates: InteractionPredicates;
 }
@@ -267,54 +653,19 @@ export const NecromancerDamageSources: DamageSource[] = [
     name: 'Bone Splinters',
     baseDamage: 0.09,
     hasRanks: true,
+    canCrit: true,
+    canOP: true,
     additiveDamagePredicates: {
       ...DefaultAdditiveDamagePredicates,
       ...VersusAdditiveDamagePredicates,
     },
     multiplierPredicates: {
       [DamageMultiplierName.Conceited]: AlwaysTrue,
-      // [DamageMultiplierName.Essence]: cxt => cxt.isCrit && !cxt.enemyState.isHealthy,
-      [DamageMultiplierName.Essence]: AlwaysTrue,
+      [DamageMultiplierName.Essence]: cxt => cxt.isCrit && !cxt.enemyState.isHealthy,
+      // [DamageMultiplierName.Essence]: AlwaysTrue,
     },
   }
 ];
 
-export interface DamageMultiplierBaseData {
-  readonly defaultValue: number;
-  readonly variable: boolean;
-  readonly apply: (prev: number, thisMulti: DamageMultiplier) => number;
-}
 
-export type DamageMultiplierDataset = {
-  // TODO: make this non-optional once all values are defined
-  readonly [key in DamageMultiplierName]?: DamageMultiplierBaseData;
-}
-
-export const DefaultMultiplierApply = (prev: number, thisMulti: DamageMultiplier) => (prev * thisMulti.value);
-
-export const DamageMultiplierData: DamageMultiplierDataset = {
-  [DamageMultiplierName.Conceited]: {
-    defaultValue: 1.25,
-    variable: true,
-    apply: DefaultMultiplierApply,
-  },
-  [DamageMultiplierName.Essence]: {
-    defaultValue: 1.22,
-    variable: false,
-    apply: DefaultMultiplierApply,
-  }
-}
-
-export const initializeMultiplier = (name: DamageMultiplierName): DamageMultiplier | undefined => {
-  const base = DamageMultiplierData[name];
-  if (base) {
-    return {
-      name,
-      variable: base.variable,
-      enabled: true,
-      value: base.defaultValue,
-      apply: base.apply,
-    }
-  }
-}
 

@@ -5,7 +5,9 @@ import { AsyncWrapper } from "../async"
 import { AdditiveDamageView } from "./additiveDamageView"
 import { CharacterTraits } from "./character/characterTraits"
 import { DamageSources } from "./damageSources"
+import { EnemyStateView } from "./states/enemyStateView"
 import { MultiplierSectionView } from "./multipliers"
+import { PlayerStateView } from "./states/playerStateView"
 
 export const CalculatorPage  = () => {
   const { loadStatus } = useAppSelector(state => state.appData);
@@ -22,6 +24,8 @@ export const CalculatorPage  = () => {
         <FormControl>
           <CharacterTraits />
           <DamageSources />
+          <PlayerStateView />
+          <EnemyStateView />
           <AdditiveDamageView />
           <MultiplierSectionView />
         </FormControl>

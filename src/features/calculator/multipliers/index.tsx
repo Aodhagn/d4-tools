@@ -10,7 +10,7 @@ export const MultiplierSectionView = () => {
 
   const relevantMultipliers = new Set<DamageMultiplierName>();
 
-  for (const damageSource of damageSources) {
+  for (const damageSource of Object.values(damageSources)) {
     for (const multiplier in damageSource.source.multiplierPredicates) {
       relevantMultipliers.add(multiplier as DamageMultiplierName);
     }
