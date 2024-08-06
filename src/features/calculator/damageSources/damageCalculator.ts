@@ -18,7 +18,10 @@ export const calculateDamage = (damageSourceInstance: DamageSourceInstance, calc
     * damageSourceInstance.source.baseDamage 
     * getMainStatMulti(calculatorData)
     * getAdditiveDamageMulti(appliedAdditiveDamageSources)
-    * getTotalMultiplier(appliedMultipliers));
+    * getTotalMultiplier(appliedMultipliers))
+    * applyCritMulti(damageSourceInstance)
+    * applyVulnMulti(calculatorData)
+    * applyOverpowerMulti(damageSourceInstance);
 }
 
 export const sortAdditiveDamageSources = (additiveDamagePredicates: InteractionPredicates, predicateContext: PredicateContext):
@@ -118,4 +121,28 @@ export const convertMultiToDisplay = (value: number) => {
 
 export const convertDisplayToMulti = (value: string) => {
   return (parseInt(value) / 100) + 1;
+}
+
+export const applyCritMulti = (damageSourceInstance: DamageSourceInstance) => {
+  if (damageSourceInstance.isCrit) {
+    return 1.5;
+  } else {
+    return 1;
+  }
+}
+
+export const applyVulnMulti = (context: CalculatorData) => {
+  if (context.enemyState.isVuln) {
+    return 1.2;
+  } else {
+    return 1;
+  }
+} 
+
+export const applyOverpowerMulti = (damageSourceInstance: DamageSourceInstance) => {
+  if (damageSourceInstance.isOP) {
+    return 1.5;
+  } else {
+    return 1;
+  }
 }
